@@ -1,26 +1,16 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import FixtureGenerator from '@/components/FixtureGenerator.vue';
-import ContinueFixture from '@/components/ContinueFixture.vue';
+// src/router/index.js
+import { createRouter, createWebHashHistory } from 'vue-router'
+import FixtureGenerator from '@/components/FixtureGenerator.vue'
+import ContinueFixture from '@/components/ContinueFixture.vue'
 
 const routes = [
-  {
-    path: '/',
-    name: 'FixtureGenerator',
-    component: FixtureGenerator,
-  },
-  {
-    path: '/continue',
-    name: 'ContinueFixture',
-    component: ContinueFixture,
-  },
-];
+  { path: '/', component: FixtureGenerator },
+  { path: '/continue', component: ContinueFixture },
+]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    { path: '/', component: FixtureGenerator },
-    { path: '/continue', component: ContinueFixture },
-  ],
+  history: createWebHashHistory(),
+  routes,
 })
 
-export default router;
+export default router
