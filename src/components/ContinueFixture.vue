@@ -126,10 +126,13 @@ import { ref } from 'vue'
 const rounds = ref([])
 const standings = ref([])
 const fileContent = ref(null)
+const originalFilename = ref('fixture_with_scores.csv') // fallback name
 
 function handleFileUpload(event) {
   const file = event.target.files[0]
   if (!file) return
+
+  originalFilename.value = file.name || 'fixture_with_scores.csv'
 
   const reader = new FileReader()
   reader.onload = (e) => {
@@ -210,7 +213,7 @@ function updateStandings() {
     .sort((a, b) => b.points - a.points)
 }
 
-function saveUpdatedCSV() {
+async function saveUpdatedCSV() {
   const rows = [
     [
       'Date',
@@ -225,7 +228,6 @@ function saveUpdatedCSV() {
 
   rounds.value.forEach((round) => {
     let matchNumber = 1
-
     round.matches.forEach((match) => {
       if (match.rest) {
         rows.push([round.date, matchNumber, '', '', '', '', match.rest])
@@ -247,14 +249,30 @@ function saveUpdatedCSV() {
   })
 
   const csvContent = rows.map((row) => row.join(',')).join('\n')
-  const encodedUri =
-    'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
-  const link = document.createElement('a')
-  link.setAttribute('href', encodedUri)
-  link.setAttribute('download', 'updated_fixture.csv')
-  document.body.appendChild(link)
-  link.click()
+  const blob = new Blob([csvContent], { type: 'text/csv' })
+
+  try {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: originalFilename.value || 'updated_fixture.csv',
+      types: [
+        {
+          description: 'CSV Files',
+          accept: { 'text/csv': ['.csv'] },
+        },
+      ],
+    })
+
+    const writable = await handle.createWritable()
+    await writable.write(blob)
+    await writable.close()
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.error('Error saving file:', err)
+    }
+  }
 }
+
+
 </script>
 
 <style scoped>

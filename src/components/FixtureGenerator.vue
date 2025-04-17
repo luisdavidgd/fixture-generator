@@ -2,6 +2,19 @@
   <div class="p-4 max-w-2xl mx-auto">
     <h1 class="text-4xl font-bold mb-4 text-center">Fixture Generator</h1>
 
+    <div class="mb-4">
+      <label for="tournament_name" class="block mb-2 text-lg"
+        >Tournament Name:</label
+      >
+      <input
+        v-model="tournamentName"
+        id="tournament_name"
+        type="text"
+        class="w-full p-2 mt-1 border rounded"
+        placeholder="Enter the tournament name"
+      />
+    </div>
+
     <label for="participants" class="block mb-2 text-lg"
       >Enter player names (one per line):</label
     >
@@ -114,24 +127,6 @@
         <strong>Rest:</strong> {{ matches.find((m) => m.rest).rest }}
       </p>
     </div>
-
-    <!-- <div v-if="rounds.length > 0">
-      <div
-        v-for="(matches, roundIndex) in rounds"
-        :key="roundIndex"
-        class="mb-6"
-      >
-        <h3 class="font-semibold text-xl mb-2">Date #{{ roundIndex + 1 }}</h3>
-        <div v-for="(match, i) in matches" :key="i" class="mb-2">
-          <p v-if="match.rest" class="text-gray-600">
-            <strong>Rest:</strong> {{ match.rest }}
-          </p>
-          <p v-else class="text-lg">
-            {{ i + 1 }}) {{ match[0] }} vs {{ match[1] }}
-          </p>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -139,6 +134,7 @@
 import { ref } from 'vue'
 
 const participantInput = ref('')
+const tournamentName = ref('')
 const rounds = ref([])
 
 const getParticipants = () => {
@@ -211,12 +207,14 @@ const generateFixtures = () => {
   rounds.value = generateRounds(fullList)
 }
 
-const saveAsCSV = () => {
+async function saveAsCSV() {
   const rows = []
-  if (rounds.value.length === 0) {
-    alert('No fixture generated to save!')
+  if (!rounds.value || rounds.value.length === 0) {
+    console.error('No rounds data available to save CSV.')
     return
   }
+
+  console.log('Saving CSV...')
 
   rows.push([
     'Date',
@@ -254,13 +252,35 @@ const saveAsCSV = () => {
   })
 
   const csvContent = rows.map((row) => row.join(',')).join('\n')
-  const encodedUri =
-    'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
-  const link = document.createElement('a')
-  link.setAttribute('href', encodedUri)
-  link.setAttribute('download', 'fixture_with_scores.csv')
-  document.body.appendChild(link)
-  link.click()
+  const blob = new Blob([csvContent], { type: 'text/csv' })
+
+  // Use current timestamp and tournament name for file name
+  const timestamp = new Date().toISOString().split('T')[0]
+  const fileName = tournamentName.value
+    ? `${timestamp}_${tournamentName.value}.csv`
+    : `${timestamp}_tournament.csv`
+
+  try {
+    console.log('Attempting to open Save File Picker...')
+    const handle = await window.showSaveFilePicker({
+      suggestedName: fileName,
+      types: [
+        {
+          description: 'CSV Files',
+          accept: { 'text/csv': ['.csv'] },
+        },
+      ],
+    })
+
+    console.log('File picker opened successfully. Saving the file...')
+    const writable = await handle.createWritable()
+    await writable.write(blob)
+    await writable.close()
+
+    console.log('CSV saved successfully.')
+  } catch (err) {
+    console.error('Error saving fixture CSV:', err)
+  }
 }
 </script>
 
