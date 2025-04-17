@@ -1,6 +1,6 @@
 <template>
   <div class="p-4 max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Pokémon Tournament Fixture Generator</h1>
+    <h1 class="text-4xl font-bold mb-4">Fixture Generator</h1>
 
     <label for="participants" class="block mb-2">Enter player names (one per line):</label>
     <textarea v-model="participantInput" id="participants" rows="6" class="w-full border p-2 mb-4"></textarea>

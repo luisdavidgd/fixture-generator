@@ -1,11 +1,11 @@
 <template>
   <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Continue Tournament</h1>
+    <h1 class="text-4xl font-bold mb-4">Continue Tournament</h1>
 
     <div class="flex gap-2 mb-4">
-      <input type="file" @change="handleFileUpload" accept=".csv" />
-      <button @click="loadFixture">Load Fixture</button>
-      <button @click="saveUpdatedCSV">Save Updated Fixture</button>
+      <input class="bg-blue-400 text-white px-4 py-2 rounded" type="file" @change="handleFileUpload" accept=".csv" />
+      <button @click="loadFixture" class="bg-blue-500 text-white px-4 py-2 rounded">Load Fixture</button>
+      <button @click="saveUpdatedCSV" class="bg-green-500 text-white px-4 py-2 rounded">Save Updated Fixture</button>
     </div>
 
     <div class="flex gap-6">
