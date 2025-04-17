@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 import FixtureGenerator from '@/components/FixtureGenerator.vue';
 import ContinueFixture from '@/components/ContinueFixture.vue';
 
@@ -16,8 +16,11 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    { path: '/', component: FixtureGenerator },
+    { path: '/continue', component: ContinueFixture },
+  ],
+})
 
 export default router;
