@@ -2,23 +2,53 @@
   <div class="p-4">
     <h1 class="text-4xl font-bold mb-4">Continue Tournament</h1>
 
-    <div class="flex gap-2 mb-4">
-      <input class="bg-blue-400 text-white px-4 py-2 rounded" type="file" @change="handleFileUpload" accept=".csv" />
-      <button @click="loadFixture" class="bg-blue-500 text-white px-4 py-2 rounded">Load Fixture</button>
-      <button @click="saveUpdatedCSV" class="bg-green-500 text-white px-4 py-2 rounded">Save Updated Fixture</button>
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 mb-4">
+      <label
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        for="file_input"
+        >Upload file</label
+      >
+      <input
+        class="block w-full sm:w-64 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+        type="file"
+        @change="handleFileUpload"
+        accept=".csv"
+      />
+      <button
+        @click="loadFixture"
+        class="bg-blue-400 text-white px-4 py-2 rounded mt-2 sm:mt-0"
+      >
+        Load Fixture
+      </button>
+      <button
+        @click="saveUpdatedCSV"
+        class="bg-green-400 text-white px-4 py-2 rounded mt-2 sm:mt-0"
+      >
+        Save Updated Fixture
+      </button>
     </div>
 
-    <div class="flex gap-6">
+    <div class="flex flex-col sm:flex-row gap-6">
+      <!-- Contenedor de rondas -->
       <div class="flex-1 overflow-y-auto max-h-[80vh]" v-if="rounds.length">
-        <div v-for="(round, roundIndex) in rounds" :key="roundIndex" class="mb-6">
+        <div
+          v-for="(round, roundIndex) in rounds"
+          :key="roundIndex"
+          class="mb-6"
+        >
           <h3 class="text-lg font-semibold">{{ round.date }}</h3>
-          <div v-for="(match, matchIndex) in round.matches" :key="matchIndex" class="mb-2">
+          <div
+            v-for="(match, matchIndex) in round.matches"
+            :key="matchIndex"
+            class="mb-2"
+          >
             <template v-if="match.rest">
               <p><strong>Rest:</strong> {{ match.rest }}</p>
             </template>
             <template v-else>
               <p>
-                {{ matchIndex + 1 }}) {{ match.players[0] }} vs {{ match.players[1] }}<br />
+                {{ matchIndex + 1 }}) {{ match.players[0] }} vs
+                {{ match.players[1] }}<br />
                 Score for {{ match.players[0] }}:
                 <input
                   type="number"
@@ -39,7 +69,8 @@
         </div>
       </div>
 
-      <div class="w-64 flex-shrink-0">
+      <!-- Standings -->
+      <div class="w-full sm:w-64 flex-shrink-0">
         <h2 class="text-xl font-semibold mb-2">Standings</h2>
         <table class="w-full border border-gray-300">
           <thead>
@@ -61,107 +92,117 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const rounds = ref([]);
-const standings = ref([]);
-const fileContent = ref(null);
+const rounds = ref([])
+const standings = ref([])
+const fileContent = ref(null)
 
 function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const file = event.target.files[0]
+  if (!file) return
 
-  const reader = new FileReader();
+  const reader = new FileReader()
   reader.onload = (e) => {
-    fileContent.value = e.target.result;
-  };
-  reader.readAsText(file);
+    fileContent.value = e.target.result
+  }
+  reader.readAsText(file)
 }
 
 function loadFixture() {
   if (!fileContent.value) {
-    alert('Please upload a CSV file.');
-    return;
+    alert('Please upload a CSV file.')
+    return
   }
 
-  const content = fileContent.value;
-  const rows = content.split('\n').map(row => row.split(','));
+  const content = fileContent.value
+  const rows = content.split('\n').map((row) => row.split(','))
 
-  const parsedRounds = [];
-  let currentRound = null;
-  let currentDate = '';
-  const startIndex = rows[0][0] === "Date" ? 1 : 0;
+  const parsedRounds = []
+  let currentRound = null
+  let currentDate = ''
+  const startIndex = rows[0][0] === 'Date' ? 1 : 0
 
   for (let i = startIndex; i < rows.length; i++) {
-    const row = rows[i].map(cell => cell.trim());
-    const [date, matchNumber, p1, p2, s1, s2, rest] = row;
+    const row = rows[i].map((cell) => cell.trim())
+    const [date, matchNumber, p1, p2, s1, s2, rest] = row
 
-    if (!date) continue;
+    if (!date) continue
 
     if (date !== currentDate) {
-      currentDate = date;
-      currentRound = { date, matches: [] };
-      parsedRounds.push(currentRound);
+      currentDate = date
+      currentRound = { date, matches: [] }
+      parsedRounds.push(currentRound)
     }
 
     if (rest) {
-      currentRound.matches.push({ rest });
+      currentRound.matches.push({ rest })
     } else {
       currentRound.matches.push({
         players: [p1, p2],
-        scores: [parseInt(s1) || '', parseInt(s2) || '']
-      });
+        scores: [parseInt(s1) || '', parseInt(s2) || ''],
+      })
     }
   }
 
-  rounds.value = parsedRounds;
-  updateStandings();
+  rounds.value = parsedRounds
+  updateStandings()
 }
 
 function updateStandings() {
-  const scoreMap = {};
+  const scoreMap = {}
 
-  rounds.value.forEach(round => {
-    round.matches.forEach(match => {
+  rounds.value.forEach((round) => {
+    round.matches.forEach((match) => {
       if (match.players && match.players.length === 2) {
-        const [p1, p2] = match.players;
-        const s1 = parseInt(match.scores?.[0]);
-        const s2 = parseInt(match.scores?.[1]);
+        const [p1, p2] = match.players
+        const s1 = parseInt(match.scores?.[0])
+        const s2 = parseInt(match.scores?.[1])
 
-        if (isNaN(s1) || isNaN(s2)) return;
+        if (isNaN(s1) || isNaN(s2)) return
 
-        if (!scoreMap[p1]) scoreMap[p1] = 0;
-        if (!scoreMap[p2]) scoreMap[p2] = 0;
+        if (!scoreMap[p1]) scoreMap[p1] = 0
+        if (!scoreMap[p2]) scoreMap[p2] = 0
 
         if (s1 > s2) {
-          scoreMap[p1] += 3;
+          scoreMap[p1] += 3
         } else if (s1 < s2) {
-          scoreMap[p2] += 3;
+          scoreMap[p2] += 3
         } else {
-          scoreMap[p1] += 1;
-          scoreMap[p2] += 1;
+          scoreMap[p1] += 1
+          scoreMap[p2] += 1
         }
       }
-    });
-  });
+    })
+  })
 
   standings.value = Object.entries(scoreMap)
     .map(([player, points]) => ({ player, points }))
-    .sort((a, b) => b.points - a.points);
+    .sort((a, b) => b.points - a.points)
 }
 
 function saveUpdatedCSV() {
-  const rows = [["Date", "Match Number", "Player 1", "Player 2", "Player 1 Score", "Player 2 Score", "Rest"]];
+  const rows = [
+    [
+      'Date',
+      'Match Number',
+      'Player 1',
+      'Player 2',
+      'Player 1 Score',
+      'Player 2 Score',
+      'Rest',
+    ],
+  ]
 
   rounds.value.forEach((round) => {
-    let matchNumber = 1;
+    let matchNumber = 1
 
     round.matches.forEach((match) => {
       if (match.rest) {
-        rows.push([round.date, matchNumber, '', '', '', '', match.rest]);
+        rows.push([round.date, matchNumber, '', '', '', '', match.rest])
       } else {
-        const score1 = match.scores?.[0] ?? '';
-        const score2 = match.scores?.[1] ?? '';
+        const score1 = match.scores?.[0] ?? ''
+        const score2 = match.scores?.[1] ?? ''
         rows.push([
           round.date,
           matchNumber,
@@ -169,25 +210,26 @@ function saveUpdatedCSV() {
           match.players[1],
           score1,
           score2,
-          ''
-        ]);
+          '',
+        ])
       }
-      matchNumber++;
-    });
-  });
+      matchNumber++
+    })
+  })
 
-  const csvContent = rows.map(row => row.join(",")).join("\n");
-  const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
-  const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute('download', 'updated_fixture.csv');
-  document.body.appendChild(link);
-  link.click();
+  const csvContent = rows.map((row) => row.join(',')).join('\n')
+  const encodedUri =
+    'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
+  const link = document.createElement('a')
+  link.setAttribute('href', encodedUri)
+  link.setAttribute('download', 'updated_fixture.csv')
+  document.body.appendChild(link)
+  link.click()
 }
 </script>
 
 <style scoped>
-input[type="number"] {
+input[type='number'] {
   border: 1px solid #ccc;
   padding: 2px;
   border-radius: 4px;

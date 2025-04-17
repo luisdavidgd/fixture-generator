@@ -10,7 +10,7 @@
               <li v-for="(route, index) in routes" :key="index" class="mr-6">
                 <RouterLink
                   :to="route.path"
-                  class="text-blue-500 hover:text-blue-800"
+                  class="text-blue-400 hover:text-blue-800"
                 >
                   {{ route.name }}
                 </RouterLink>
