@@ -15,14 +15,14 @@
     <div class="flex flex-wrap gap-4 justify-center mb-4">
       <button
         @click="generateFixtures"
-        class="bg-blue-400 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition-colors"
+        class="bg-blue-400 text-white px-6 py-2 rounded-lg hover:bg-blue-400 transition-colors"
       >
         Generate Fixture
       </button>
       <button
         v-if="rounds.length > 0"
         @click="saveAsCSV"
-        class="bg-green-400 text-white px-6 py-2 rounded-lg hover:bg-green-500 transition-colors"
+        class="bg-green-400 text-white px-6 py-2 rounded-lg hover:bg-green-400 transition-colors"
       >
         Save as CSV
       </button>
@@ -63,7 +63,7 @@
           <tr
             v-if="matches.find((m) => m.rest)"
             :key="`rest-${roundIndex}`"
-            class="italic text-gray-500 dark:text-gray-400"
+            class="italic text-gray-400 dark:text-gray-400"
           >
             <td class="px-4 py-2 border text-center">
               Date #{{ roundIndex + 1 }}

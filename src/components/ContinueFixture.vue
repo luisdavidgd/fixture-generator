@@ -1,88 +1,116 @@
 <template>
   <div class="p-4">
-    <h1 class="text-4xl font-bold mb-4">Continue Tournament</h1>
+    <h1 class="text-4xl font-bold mb-4 text-center">Continue Tournament</h1>
 
-    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 mb-4">
-      <label
-        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        for="file_input"
-        >Upload file</label
-      >
-      <input
-        class="block w-full sm:w-64 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-        type="file"
-        @change="handleFileUpload"
-        accept=".csv"
-      />
-      <button
-        @click="loadFixture"
-        class="bg-blue-400 text-white px-4 py-2 rounded mt-2 sm:mt-0"
-      >
-        Load Fixture
-      </button>
-      <button
-        @click="saveUpdatedCSV"
-        class="bg-green-400 text-white px-4 py-2 rounded mt-2 sm:mt-0"
-      >
-        Save Updated Fixture
-      </button>
+    <!-- Upload Section -->
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 mb-6">
+      <div class="flex flex-col w-full sm:w-auto">
+        <label
+          for="file_input"
+          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          Upload file
+        </label>
+        <input
+          id="file_input"
+          type="file"
+          @change="handleFileUpload"
+          accept=".csv"
+          class="block w-full sm:w-64 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+        />
+      </div>
+      <div class="flex gap-2 flex-wrap sm:flex-nowrap justify-center">
+        <button
+          @click="loadFixture"
+          class="bg-blue-400 text-white px-4 py-2 rounded"
+        >
+          Load
+        </button>
+        <button
+          @click="saveUpdatedCSV"
+          class="bg-green-400 text-white px-4 py-2 rounded"
+        >
+          Save
+        </button>
+        <button
+          @click="rounds = []; standings = []; fileContent = null"
+          class="bg-red-400 text-white px-4 py-2 rounded"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Fixture & Standings -->
+    <div v-if="rounds.length" class="mb-4">
+      <h2 class="text-xl font-semibold text-center">Fixture Matches</h2>
     </div>
 
     <div class="flex flex-col sm:flex-row gap-6">
-      <!-- Contenedor de rondas -->
-      <div class="flex-1 overflow-y-auto max-h-[80vh]" v-if="rounds.length">
+      <!-- Rounds -->
+      <div class="flex-1 sm:overflow-y-auto sm:max-h-[80vh]" v-if="rounds.length">
         <div
           v-for="(round, roundIndex) in rounds"
           :key="roundIndex"
-          class="mb-6"
+          class="mb-6 p-4 bg-white dark:bg-gray-900 rounded-lg shadow"
         >
-          <h3 class="text-lg font-semibold">{{ round.date }}</h3>
+          <h3 class="text-lg font-semibold mb-4 text-blue-400 text-center">
+            {{ round.date }}
+          </h3>
           <div
             v-for="(match, matchIndex) in round.matches"
             :key="matchIndex"
-            class="mb-2"
+            class="mb-4 p-2 border rounded-lg bg-gray-50 dark:bg-gray-800"
           >
             <template v-if="match.rest">
-              <p><strong>Rest:</strong> {{ match.rest }}</p>
+              <p class="font-medium text-center text-red-400">
+                Rest: {{ match.rest }}
+              </p>
             </template>
             <template v-else>
-              <p>
-                {{ matchIndex + 1 }}) {{ match.players[0] }} vs
-                {{ match.players[1] }}<br />
-                Score for {{ match.players[0] }}:
-                <input
-                  type="number"
-                  v-model.number="match.scores[0]"
-                  class="w-12 mx-2"
-                  @input="updateStandings"
-                />
-                Score for {{ match.players[1] }}:
-                <input
-                  type="number"
-                  v-model.number="match.scores[1]"
-                  class="w-12 ml-2"
-                  @input="updateStandings"
-                />
+              <p class="font-semibold text-center mb-2">
+                Match {{ matchIndex + 1 }}: {{ match.players[0] }} vs
+                {{ match.players[1] }}
               </p>
+              <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <div class="flex items-center gap-2 justify-center">
+                  <label class="w-24 text-right">{{ match.players[0] }}</label>
+                  <input
+                    type="number"
+                    v-model.number="match.scores[0]"
+                    class="w-16 px-2 py-1 border rounded text-center"
+                    @input="updateStandings"
+                  />
+                </div>
+                <div class="flex items-center gap-2 justify-center">
+                  <label class="w-24 text-right">{{ match.players[1] }}</label>
+                  <input
+                    type="number"
+                    v-model.number="match.scores[1]"
+                    class="w-16 px-2 py-1 border rounded text-center"
+                    @input="updateStandings"
+                  />
+                </div>
+              </div>
             </template>
           </div>
         </div>
       </div>
 
       <!-- Standings -->
-      <div class="w-full sm:w-64 flex-shrink-0">
-        <h2 class="text-xl font-semibold mb-2">Standings</h2>
-        <table class="w-full border border-gray-300">
+      <div v-if="standings.length" class="w-full sm:w-64 flex-shrink-0">
+        <h2 class="text-xl font-semibold mb-2 text-center">Current Standings</h2>
+        <table class="w-full border border-gray-300 text-sm sm:text-base">
           <thead>
             <tr>
-              <th class="border px-2 py-1">Player</th>
-              <th class="border px-2 py-1">Points</th>
+              <th class="border px-2 py-2">Player</th>
+              <th class="border px-2 py-2">Points</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(player, index) in standings" :key="index">
-              <td class="border px-2 py-1">{{ player.player }}</td>
-              <td class="border px-2 py-1">{{ player.points }}</td>
+              <td class="border px-2 py-2">{{ player.player }}</td>
+              <td class="border px-2 py-2">{{ player.points }}</td>
             </tr>
           </tbody>
         </table>
@@ -90,6 +118,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref } from 'vue'

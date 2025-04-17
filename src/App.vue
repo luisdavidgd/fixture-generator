@@ -6,7 +6,7 @@
       <div class="text-center">
         <div class="p-4">
           <nav class="mb-4">
-            <ul class="flex">
+            <ul class="flex justify-between">
               <li v-for="(route, index) in routes" :key="index" class="mr-6">
                 <RouterLink
                   :to="route.path"
@@ -28,6 +28,6 @@
 <script setup>
 const routes = [
   { name: 'Generate Fixture', path: '/' },
-  { name: 'Continue Fixture', path: '/continue' },
+  { name: 'Continue Tournament', path: '/continue' },
 ]
 </script>
