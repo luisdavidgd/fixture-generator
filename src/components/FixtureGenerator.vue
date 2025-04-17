@@ -1,21 +1,25 @@
 <template>
   <div class="p-4 max-w-2xl mx-auto">
-    <h1 class="text-4xl font-bold mb-4">Fixture Generator</h1>
+    <h1 class="text-4xl font-bold mb-4 text-center">Fixture Generator</h1>
 
-    <label for="participants" class="block mb-2">Enter player names (one per line):</label>
-    <textarea v-model="participantInput" id="participants" rows="6" class="w-full border p-2 mb-4"></textarea>
+    <label for="participants" class="block mb-2 text-lg">Enter player names (one per line):</label>
+    <textarea v-model="participantInput" id="participants" rows="6" class="w-full border p-2 mb-4 rounded-lg"></textarea>
 
-    <div class="flex gap-2 mb-4">
-      <button @click="generateFixtures" class="bg-blue-500 text-white px-4 py-2 rounded">Generate Fixture</button>
-      <button v-if="rounds.length > 0" @click="saveAsCSV" class="bg-green-500 text-white px-4 py-2 rounded">Save as CSV</button>
+    <div class="flex flex-wrap gap-4 justify-center mb-4">
+      <button @click="generateFixtures" class="bg-blue-400 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition-colors">
+        Generate Fixture
+      </button>
+      <button v-if="rounds.length > 0" @click="saveAsCSV" class="bg-green-400 text-white px-6 py-2 rounded-lg hover:bg-green-500 transition-colors">
+        Save as CSV
+      </button>
     </div>
 
     <div v-if="rounds.length > 0">
-      <div v-for="(matches, roundIndex) in rounds" :key="roundIndex" class="mb-4">
-        <h3 class="font-semibold">Date #{{ roundIndex + 1 }}</h3>
-        <div v-for="(match, i) in matches" :key="i">
-          <p v-if="match.rest"><strong>Rest:</strong> {{ match.rest }}</p>
-          <p v-else>{{ i + 1 }}) {{ match[0] }} vs {{ match[1] }}</p>
+      <div v-for="(matches, roundIndex) in rounds" :key="roundIndex" class="mb-6">
+        <h3 class="font-semibold text-xl mb-2">Date #{{ roundIndex + 1 }}</h3>
+        <div v-for="(match, i) in matches" :key="i" class="mb-2">
+          <p v-if="match.rest" class="text-gray-600"><strong>Rest:</strong> {{ match.rest }}</p>
+          <p v-else class="text-lg">{{ i + 1 }}) {{ match[0] }} vs {{ match[1] }}</p>
         </div>
       </div>
     </div>
@@ -129,3 +133,39 @@ const saveAsCSV = () => {
   link.click()
 }
 </script>
+
+<style scoped>
+/* Make the buttons look better */
+button {
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Make textarea more responsive */
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Small screen adjustments */
+@media (max-width: 640px) {
+  .p-4 {
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+
+  .text-lg {
+    font-size: 1rem;
+  }
+}
+</style>
