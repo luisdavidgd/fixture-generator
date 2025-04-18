@@ -13,6 +13,7 @@
         </label>
         <input
           id="file_input"
+          ref="fileInput"
           type="file"
           @change="handleFileUpload"
           accept=".csv"
@@ -33,11 +34,7 @@
           Save
         </button>
         <button
-          @click="
-            rounds = [];
-            standings = [];
-            fileContent = null;
-          "
+          @click="clearAll"
           class="bg-red-400 text-white px-4 py-2 rounded"
         >
           Clear
@@ -134,6 +131,7 @@ import { ref } from 'vue'
 
 const rounds = ref([])
 const standings = ref([])
+const fileInput = ref(null)
 const fileContent = ref(null)
 const originalFilename = ref('fixture_with_scores.csv') // fallback name
 
@@ -292,6 +290,15 @@ async function saveUpdatedCSV() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
+  }
+}
+
+function clearAll() {
+  rounds.value = []
+  standings.value = []
+  fileContent.value = null
+  if (fileInput.value) {
+    fileInput.value.value = null
   }
 }
 </script>
