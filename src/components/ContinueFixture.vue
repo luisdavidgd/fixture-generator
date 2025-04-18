@@ -1,9 +1,9 @@
 <template>
   <div class="p-4">
-    <h1 class="text-4xl font-bold mb-4 text-center">Continue Tournament</h1>
+    <h1 class="text-4xl font-bold mb-4">Continue Tournament</h1>
 
     <!-- Upload Section -->
-    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 mb-6">
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 mb-6 justify-center">
       <div class="flex flex-col w-full sm:w-auto">
         <label
           for="file_input"
@@ -25,19 +25,19 @@
           @click="loadFixture"
           class="bg-blue-400 text-white px-4 py-2 rounded"
         >
-          Load
+          <component :is="FileUp" />
         </button>
         <button
           @click="saveUpdatedCSV"
           class="bg-green-400 text-white px-4 py-2 rounded"
         >
-          Save
+          <component :is="Save" />
         </button>
         <button
           @click="clearAll"
           class="bg-red-400 text-white px-4 py-2 rounded"
         >
-          Clear
+          <component :is="Trash2" />
         </button>
       </div>
     </div>
@@ -47,7 +47,7 @@
       <h2 class="text-xl font-semibold text-center">Fixture Matches</h2>
     </div>
 
-    <div class="flex flex-col sm:flex-row gap-6">
+    <div class="flex flex-col sm:flex-row gap-6 pb-20">
       <!-- Rounds -->
       <div
         class="flex-1 sm:overflow-y-auto sm:max-h-[80vh]"
@@ -128,6 +128,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { Loader, Save, Trash, Trash2, FileUp } from 'lucide-vue-next' // íconos bonitos
 
 const rounds = ref([])
 const standings = ref([])
