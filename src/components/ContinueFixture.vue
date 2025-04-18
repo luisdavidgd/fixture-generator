@@ -33,7 +33,11 @@
           Save
         </button>
         <button
-          @click="rounds = []; standings = []; fileContent = null"
+          @click="
+            rounds = []
+            standings = []
+            fileContent = null
+          "
           class="bg-red-400 text-white px-4 py-2 rounded"
         >
           Clear
@@ -48,7 +52,10 @@
 
     <div class="flex flex-col sm:flex-row gap-6">
       <!-- Rounds -->
-      <div class="flex-1 sm:overflow-y-auto sm:max-h-[80vh]" v-if="rounds.length">
+      <div
+        class="flex-1 sm:overflow-y-auto sm:max-h-[80vh]"
+        v-if="rounds.length"
+      >
         <div
           v-for="(round, roundIndex) in rounds"
           :key="roundIndex"
@@ -99,7 +106,9 @@
 
       <!-- Standings -->
       <div v-if="standings.length" class="w-full sm:w-64 flex-shrink-0">
-        <h2 class="text-xl font-semibold mb-2 text-center">Current Standings</h2>
+        <h2 class="text-xl font-semibold mb-2 text-center">
+          Current Standings
+        </h2>
         <table class="w-full border border-gray-300 text-sm sm:text-base">
           <thead>
             <tr>
@@ -251,28 +260,39 @@ async function saveUpdatedCSV() {
   const csvContent = rows.map((row) => row.join(',')).join('\n')
   const blob = new Blob([csvContent], { type: 'text/csv' })
 
-  try {
-    const handle = await window.showSaveFilePicker({
-      suggestedName: originalFilename.value || 'updated_fixture.csv',
-      types: [
-        {
-          description: 'CSV Files',
-          accept: { 'text/csv': ['.csv'] },
-        },
-      ],
-    })
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: originalFilename.value || 'updated_fixture.csv',
+        types: [
+          {
+            description: 'CSV Files',
+            accept: { 'text/csv': ['.csv'] },
+          },
+        ],
+      })
 
-    const writable = await handle.createWritable()
-    await writable.write(blob)
-    await writable.close()
-  } catch (err) {
-    if (err.name !== 'AbortError') {
-      console.error('Error saving file:', err)
+      const writable = await handle.createWritable()
+      await writable.write(blob)
+      await writable.close()
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Error saving file:', err)
+      }
     }
+  } else {
+    // Fallback para iOS/Safari
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fallbackFilename
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 }
-
-
 </script>
 
 <style scoped>

@@ -260,26 +260,39 @@ async function saveAsCSV() {
     ? `${timestamp}_${tournamentName.value}.csv`
     : `${timestamp}_tournament.csv`
 
-  try {
-    console.log('Attempting to open Save File Picker...')
-    const handle = await window.showSaveFilePicker({
-      suggestedName: fileName,
-      types: [
-        {
-          description: 'CSV Files',
-          accept: { 'text/csv': ['.csv'] },
-        },
-      ],
-    })
+  if (window.showSaveFilePicker) {
+    try {
+      console.log('Attempting to open Save File Picker...')
+      const handle = await window.showSaveFilePicker({
+        suggestedName: fileName,
+        types: [
+          {
+            description: 'CSV Files',
+            accept: { 'text/csv': ['.csv'] },
+          },
+        ],
+      })
 
-    console.log('File picker opened successfully. Saving the file...')
-    const writable = await handle.createWritable()
-    await writable.write(blob)
-    await writable.close()
+      console.log('File picker opened successfully. Saving the file...')
+      const writable = await handle.createWritable()
+      await writable.write(blob)
+      await writable.close()
 
-    console.log('CSV saved successfully.')
-  } catch (err) {
-    console.error('Error saving fixture CSV:', err)
+      console.log('CSV saved successfully.')
+    } catch (err) {
+      console.error('Error saving fixture CSV:', err)
+    }
+  } else {
+    // Fallback for iOS/Safari
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fileName
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 }
 </script>
