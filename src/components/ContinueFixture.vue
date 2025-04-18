@@ -259,11 +259,12 @@ async function saveUpdatedCSV() {
 
   const csvContent = rows.map((row) => row.join(',')).join('\n')
   const blob = new Blob([csvContent], { type: 'text/csv' })
+  const fallbackFilename = originalFilename.value || 'updated_fixture.csv'
 
   if (window.showSaveFilePicker) {
     try {
       const handle = await window.showSaveFilePicker({
-        suggestedName: originalFilename.value || 'updated_fixture.csv',
+        suggestedName: fallbackFilename,
         types: [
           {
             description: 'CSV Files',
