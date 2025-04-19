@@ -128,7 +128,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Loader, Save, Trash, Trash2, FileUp } from 'lucide-vue-next' // íconos bonitos
+import { Loader, Save, Trash2, FileUp } from 'lucide-vue-next'
 
 const rounds = ref([])
 const standings = ref([])
