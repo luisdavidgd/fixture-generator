@@ -46,10 +46,11 @@
 </template>
 
 <script setup>
-import { Home, StepForward } from 'lucide-vue-next' // íconos bonitos
+import { Home, StepForward, CircleHelp } from 'lucide-vue-next'
 
 const routes = [
   { name: 'Home', path: '/', icon: Home },
   { name: 'Continue', path: '/continue', icon: StepForward },
+  { name: 'How to Use', path: '/how-to-use', icon: CircleHelp },
 ]
 </script>
