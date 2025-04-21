@@ -45,7 +45,7 @@
     <p class="mb-2">
       After generating the fixture, you can export it as a CSV file and import
       it into a Google Spreadsheet. If the spreadsheet is <b>public</b> (or
-      anyone with the link can view), you can use the fields below to display
+      anyone with the link can view), you can use the fields above to display
       the fixture online in real time using the <b>Spreadsheet View</b>.
     </p>
     <p>
