@@ -11,7 +11,7 @@
                 'hover:text-black dark:hover:text-white',
                 isActive(route.path)
                   ? 'text-black dark:text-white font-bold'
-                  : 'text-blue-400 dark:text-gray-400'
+                  : 'text-blue-400 dark:text-gray-400',
               ]"
             >
               {{ route.name }}
@@ -41,7 +41,7 @@
             'flex flex-col items-center text-sm hover:text-blue-600',
             isActive(route.path)
               ? 'text-black dark:text-white font-bold'
-              : 'text-blue-400 dark:text-gray-400'
+              : 'text-blue-400 dark:text-gray-400',
           ]"
         >
           <component :is="route.icon" class="w-6 h-6 mb-1" />
@@ -54,15 +54,21 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { Home, StepForward, CircleHelp } from 'lucide-vue-next'
+import { Home, StepForward, CircleHelp, FileSpreadsheet } from 'lucide-vue-next'
 
 const route = useRoute()
 
 const routes = [
   { name: 'Home', path: '/', icon: Home },
   { name: 'Continue', path: '/continue', icon: StepForward },
+  { name: 'Spreadsheets', path: '/spreadsheets', icon: FileSpreadsheet },
   { name: 'How to Use', path: '/how-to-use', icon: CircleHelp },
 ]
 
-const isActive = (path) => route.path === path
+const isActive = (path) => {
+  if (path === '/spreadsheets') {
+    return route.path.startsWith('/spreadsheets')
+  }
+  return route.path === path
+}
 </script>
