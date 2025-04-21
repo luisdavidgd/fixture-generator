@@ -1,45 +1,52 @@
 <template>
-  <div class="p-4 max-w-3xl mx-auto">
+  <div class="p-4 max-w-4xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">Fixture from Spreadsheet</h1>
 
     <div v-if="loading" class="text-gray-500">Loading CSV...</div>
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
-    <div v-else class="pb-10">
-      <!-- Matchups per round -->
+    <!-- Layout -->
+    <div class="flex flex-col lg:flex-row lg:gap-6">
+      <!-- Left side: Rounds (scrollable only in lg) -->
       <div
-        v-for="(matchups, round) in rounds"
-        :key="round"
-        class="mb-6 border p-4 rounded shadow"
+        class="flex-1 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto lg:pr-2"
       >
-        <h2 class="text-xl font-semibold mb-2">{{ round }}</h2>
-        <ul>
-          <li
-            v-for="(match, index) in matchups"
-            :key="index"
-            class="mb-2 flex justify-between"
-          >
-            <span v-if="match.type === 'match'">
-              <span v-if="match.score1 !== '' && match.score2 !== ''">
-                <span :class="{ 'font-bold': match.score1 > match.score2 }">
-                  {{ match.player1 }} ({{ match.score1 }})
+        <div
+          v-for="(matchups, round) in rounds"
+          :key="round"
+          class="mb-6 border p-4 rounded shadow"
+        >
+          <h2 class="text-xl font-semibold mb-2">{{ round }}</h2>
+          <ul>
+            <li
+              v-for="(match, index) in matchups"
+              :key="index"
+              class="mb-2 flex justify-between"
+            >
+              <span v-if="match.type === 'match'">
+                <span v-if="match.score1 !== '' && match.score2 !== ''">
+                  <span :class="{ 'font-bold': match.score1 > match.score2 }">
+                    {{ match.player1 }} ({{ match.score1 }})
+                  </span>
+                  vs
+                  <span :class="{ 'font-bold': match.score2 > match.score1 }">
+                    {{ match.player2 }} ({{ match.score2 }})
+                  </span>
                 </span>
-                vs
-                <span :class="{ 'font-bold': match.score2 > match.score1 }">
-                  {{ match.player2 }} ({{ match.score2 }})
-                </span>
+                <span v-else> {{ match.player1 }} vs {{ match.player2 }} </span>
               </span>
-              <span v-else> {{ match.player1 }} vs {{ match.player2 }} </span>
-            </span>
-            <span v-else class="italic text-gray-600">
-              {{ match.player }} rest
-            </span>
-          </li>
-        </ul>
+              <span v-else class="italic text-gray-600">
+                {{ match.player }} rest
+              </span>
+            </li>
+          </ul>
+        </div>
       </div>
 
-      <!-- Standings Table -->
-      <div class="mt-8 border p-4 rounded shadow">
+      <!-- Right side: Standings -->
+      <div
+        class="mt-8 lg:mt-0 lg:w-80 lg:shrink-0 border p-4 rounded shadow h-fit lg:sticky lg:top-4 lg:self-start"
+      >
         <h2 class="text-xl font-bold mb-4">Standings</h2>
         <table class="min-w-full text-sm border-collapse">
           <thead>
@@ -54,7 +61,7 @@
           </thead>
           <tbody>
             <tr
-              v-for="(stats, player) in standings"
+              v-for="[player, stats] in sortedStandings"
               :key="player"
               class="border-t"
             >
@@ -181,5 +188,12 @@ const standings = computed(() => {
   }
 
   return stats
+})
+
+const sortedStandings = computed(() => {
+  return Object.entries(standings.value).sort(([, a], [, b]) => {
+    if (b.points !== a.points) return b.points - a.points
+    return b.wins - a.wins
+  })
 })
 </script>
