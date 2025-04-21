@@ -1,15 +1,33 @@
+<script setup>
+import { useRoute } from 'vue-router'
+import { Home, StepForward, CircleHelp } from 'lucide-vue-next'
+
+const route = useRoute()
+
+const routes = [
+  { name: 'Home', path: '/', icon: Home },
+  { name: 'Continue', path: '/continue', icon: StepForward },
+  { name: 'How to Use', path: '/how-to-use', icon: CircleHelp },
+]
+
+const isActive = (path) => route.path === path
+</script>
+
 <template>
   <div class="min-h-screen flex flex-col justify-between">
     <!-- Top nav (hidden on mobile) -->
     <div class="p-4 sm:block hidden">
       <nav class="mb-4">
         <ul class="flex justify-center gap-6">
-          <li v-for="(route, index) in routes" :key="index">
+          <li v-for="(routeItem, index) in routes" :key="index">
             <RouterLink
-              :to="route.path"
-              class="text-blue-400 hover:text-blue-800"
+              :to="routeItem.path"
+              :class="[
+                'hover:text-white',
+                isActive(routeItem.path) ? 'text-white font-bold' : 'text-blue-400'
+              ]"
             >
-              {{ route.name }}
+              {{ routeItem.name }}
             </RouterLink>
           </li>
         </ul>
@@ -29,24 +47,17 @@
     >
       <nav class="flex justify-around py-2">
         <RouterLink
-          v-for="(route, index) in routes"
+          v-for="(routeItem, index) in routes"
           :key="index"
-          :to="route.path"
-          class="flex flex-col items-center text-sm text-blue-400 hover:text-blue-600"
+          :to="routeItem.path"
+          :class="[
+            'flex flex-col items-center text-sm hover:text-blue-600',
+            isActive(routeItem.path) ? 'text-white font-bold' : 'text-blue-400'
+          ]"
         >
-          <component :is="route.icon" class="w-6 h-6 mb-1" />
+          <component :is="routeItem.icon" class="w-6 h-6 mb-1" />
         </RouterLink>
       </nav>
     </div>
   </div>
 </template>
-
-<script setup>
-import { Home, StepForward, CircleHelp } from 'lucide-vue-next'
-
-const routes = [
-  { name: 'Home', path: '/', icon: Home },
-  { name: 'Continue', path: '/continue', icon: StepForward },
-  { name: 'How to Use', path: '/how-to-use', icon: CircleHelp },
-]
-</script>
