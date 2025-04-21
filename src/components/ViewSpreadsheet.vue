@@ -54,8 +54,9 @@
               <th class="p-2 border">Player</th>
               <th class="p-2 border">GP</th>
               <th class="p-2 border">W</th>
+              <th class="p-2 border">D</th>
               <th class="p-2 border">L</th>
-              <!-- <th class="p-2 border">BYE</th> -->
+              <th class="p-2 border">BYE</th>
               <th class="p-2 border">PTS</th>
             </tr>
           </thead>
@@ -68,8 +69,9 @@
               <td class="p-2 border">{{ player }}</td>
               <td class="p-2 border">{{ stats.played }}</td>
               <td class="p-2 border">{{ stats.wins }}</td>
+              <td class="p-2 border">{{ stats.draws }}</td>
               <td class="p-2 border">{{ stats.losses }}</td>
-              <!-- <td class="p-2 border">{{ stats.byes }}</td> -->
+              <td class="p-2 border">{{ stats.byes }}</td>
               <td class="p-2 border font-bold">{{ stats.points }}</td>
             </tr>
           </tbody>
@@ -82,6 +84,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+
+const WINNER_POINTS = 3
+const DRAW_POINTS = 1
+const LOSER_POINTS = 0
 
 // Get the spreadsheet ID from the URL route
 const route = useRoute()
@@ -158,9 +164,23 @@ const standings = computed(() => {
         const { player1, player2, score1, score2 } = match
 
         if (!stats[player1])
-          stats[player1] = { played: 0, wins: 0, losses: 0, byes: 0, points: 0 }
+          stats[player1] = {
+            played: 0,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            byes: 0,
+            points: 0,
+          }
         if (!stats[player2])
-          stats[player2] = { played: 0, wins: 0, losses: 0, byes: 0, points: 0 }
+          stats[player2] = {
+            played: 0,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            byes: 0,
+            points: 0,
+          }
 
         const hasScores = score1 !== '' && score2 !== ''
 
@@ -171,17 +191,32 @@ const standings = computed(() => {
           if (+score1 > +score2) {
             stats[player1].wins++
             stats[player2].losses++
-            stats[player1].points++
+            stats[player1].points += WINNER_POINTS
+            stats[player2].points += LOSER_POINTS
           } else if (+score2 > +score1) {
             stats[player2].wins++
             stats[player1].losses++
-            stats[player2].points++
+            stats[player2].points += WINNER_POINTS
+            stats[player1].points += LOSER_POINTS
+          } else {
+            // Draw
+            stats[player1].draws++
+            stats[player2].draws++
+            stats[player1].points += DRAW_POINTS
+            stats[player2].points += DRAW_POINTS
           }
         }
       } else if (match.type === 'bye') {
         const player = match.player
         if (!stats[player])
-          stats[player] = { played: 0, wins: 0, losses: 0, byes: 0, points: 0 }
+          stats[player] = {
+            played: 0,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            byes: 0,
+            points: 0,
+          }
         stats[player].byes++
       }
     }
