@@ -38,7 +38,7 @@
           :key="index"
           :to="routeItem.path"
           :class="[
-            'flex flex-col items-center text-sm hover:text-blue-600',
+            'flex flex-col items-center text-sm hover:text-white',
             isActive(routeItem.path) ? 'text-white font-bold' : 'text-blue-400',
           ]"
         >
