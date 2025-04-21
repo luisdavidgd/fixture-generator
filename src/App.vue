@@ -4,17 +4,15 @@
     <div class="p-4 sm:block hidden">
       <nav class="mb-4">
         <ul class="flex justify-center gap-6">
-          <li v-for="(routeItem, index) in routes" :key="index">
+          <li v-for="(route, index) in routes" :key="index">
             <RouterLink
-              :to="routeItem.path"
+              :to="route.path"
               :class="[
                 'hover:text-white',
-                isActive(routeItem.path)
-                  ? 'text-white font-bold'
-                  : 'text-blue-400',
+                isActive(route.path) ? 'text-white font-bold' : 'text-blue-400',
               ]"
             >
-              {{ routeItem.name }}
+              {{ route.name }}
             </RouterLink>
           </li>
         </ul>
@@ -34,15 +32,15 @@
     >
       <nav class="flex justify-around py-2">
         <RouterLink
-          v-for="(routeItem, index) in routes"
+          v-for="(route, index) in routes"
           :key="index"
-          :to="routeItem.path"
+          :to="route.path"
           :class="[
             'flex flex-col items-center text-sm hover:text-white',
-            isActive(routeItem.path) ? 'text-white font-bold' : 'text-blue-400',
+            isActive(route.path) ? 'text-white font-bold' : 'text-blue-400',
           ]"
         >
-          <component :is="routeItem.icon" class="w-6 h-6 mb-1" />
+          <component :is="route.icon" class="w-6 h-6 mb-1" />
         </RouterLink>
       </nav>
     </div>
