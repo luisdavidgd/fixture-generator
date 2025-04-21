@@ -8,8 +8,10 @@
             <RouterLink
               :to="route.path"
               :class="[
-                'hover:text-white',
-                isActive(route.path) ? 'text-white font-bold' : 'text-blue-400',
+                'hover:text-black dark:hover:text-white',
+                isActive(route.path)
+                  ? 'text-black dark:text-white font-bold'
+                  : 'text-blue-400 dark:text-gray-400'
               ]"
             >
               {{ route.name }}
@@ -36,8 +38,10 @@
           :key="index"
           :to="route.path"
           :class="[
-            'flex flex-col items-center text-sm hover:text-white',
-            isActive(route.path) ? 'text-white font-bold' : 'text-blue-400',
+            'flex flex-col items-center text-sm hover:text-blue-600',
+            isActive(route.path)
+              ? 'text-black dark:text-white font-bold'
+              : 'text-blue-400 dark:text-gray-400'
           ]"
         >
           <component :is="route.icon" class="w-6 h-6 mb-1" />
@@ -46,6 +50,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { useRoute } from 'vue-router'
