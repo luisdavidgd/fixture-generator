@@ -37,7 +37,7 @@
         @click="navigateToSpreadsheet"
         class="bg-indigo-400 text-white px-4 py-2 rounded mt-4 sm:mt-0"
       >
-        Go to Spreadsheet View
+        Spreadsheet View
       </button>
     </div>
 
