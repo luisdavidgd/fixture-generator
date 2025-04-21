@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="bg-white text-black dark:bg-gray-900 dark:text-white transition-colors duration-300"
-  >
+  <div>
     <div class="min-h-screen flex flex-col justify-between">
       <!-- Top nav (hidden on mobile) -->
       <div class="p-4 sm:block hidden">
