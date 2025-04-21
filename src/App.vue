@@ -1,18 +1,3 @@
-<script setup>
-import { useRoute } from 'vue-router'
-import { Home, StepForward, CircleHelp } from 'lucide-vue-next'
-
-const route = useRoute()
-
-const routes = [
-  { name: 'Home', path: '/', icon: Home },
-  { name: 'Continue', path: '/continue', icon: StepForward },
-  { name: 'How to Use', path: '/how-to-use', icon: CircleHelp },
-]
-
-const isActive = (path) => route.path === path
-</script>
-
 <template>
   <div class="min-h-screen flex flex-col justify-between">
     <!-- Top nav (hidden on mobile) -->
@@ -24,7 +9,9 @@ const isActive = (path) => route.path === path
               :to="routeItem.path"
               :class="[
                 'hover:text-white',
-                isActive(routeItem.path) ? 'text-white font-bold' : 'text-blue-400'
+                isActive(routeItem.path)
+                  ? 'text-white font-bold'
+                  : 'text-blue-400',
               ]"
             >
               {{ routeItem.name }}
@@ -52,7 +39,7 @@ const isActive = (path) => route.path === path
           :to="routeItem.path"
           :class="[
             'flex flex-col items-center text-sm hover:text-blue-600',
-            isActive(routeItem.path) ? 'text-white font-bold' : 'text-blue-400'
+            isActive(routeItem.path) ? 'text-white font-bold' : 'text-blue-400',
           ]"
         >
           <component :is="routeItem.icon" class="w-6 h-6 mb-1" />
@@ -61,3 +48,18 @@ const isActive = (path) => route.path === path
     </div>
   </div>
 </template>
+
+<script setup>
+import { useRoute } from 'vue-router'
+import { Home, StepForward, CircleHelp } from 'lucide-vue-next'
+
+const route = useRoute()
+
+const routes = [
+  { name: 'Home', path: '/', icon: Home },
+  { name: 'Continue', path: '/continue', icon: StepForward },
+  { name: 'How to Use', path: '/how-to-use', icon: CircleHelp },
+]
+
+const isActive = (path) => route.path === path
+</script>
