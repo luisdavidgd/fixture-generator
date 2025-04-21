@@ -55,7 +55,7 @@
           <th class="px-4 py-2 border">Match #</th>
           <th class="px-4 py-2 border">Player 1</th>
           <th class="px-4 py-2 border">Player 2</th>
-          <th class="px-4 py-2 border">Rest</th>
+          <th v-if="hasRest" class="px-4 py-2 border">Rest</th>
         </tr>
       </thead>
       <tbody>
@@ -71,7 +71,7 @@
             <td class="px-4 py-2 border text-center">{{ i + 1 }}</td>
             <td class="px-4 py-2 border text-center">{{ match[0] }}</td>
             <td class="px-4 py-2 border text-center">{{ match[1] }}</td>
-            <td class="px-4 py-2 border text-center">—</td>
+            <td v-if="hasRest" class="px-4 py-2 border text-center">—</td>
           </tr>
           <tr
             v-if="matches.find((m) => m.rest)"
@@ -84,7 +84,7 @@
             <td class="px-4 py-2 border text-center">—</td>
             <td class="px-4 py-2 border text-center">—</td>
             <td class="px-4 py-2 border text-center">—</td>
-            <td class="px-4 py-2 border text-center">
+            <td v-if="hasRest" class="px-4 py-2 border text-center">
               {{ matches.find((m) => m.rest).rest }}
             </td>
           </tr>
@@ -131,11 +131,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const participantInput = ref('')
 const tournamentName = ref('')
 const rounds = ref([])
+
+const hasRest = computed(() => {
+  return rounds.value.some((matches) => matches.some((m) => m.rest))
+})
 
 const getParticipants = () => {
   return participantInput.value
