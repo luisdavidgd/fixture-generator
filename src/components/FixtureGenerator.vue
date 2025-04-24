@@ -191,14 +191,13 @@ const generateRounds = (players) => {
         matches.push([p1, p2])
       }
     }
-    result.push(matches)
+    result.push(shuffleArray(matches))
     currentPlayers = [
       currentPlayers[0],
       ...currentPlayers.slice(2),
       currentPlayers[1],
     ]
   }
-
   return result
 }
 
